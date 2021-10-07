@@ -23,7 +23,7 @@
 import UIKit
 
 @IBDesignable
-public class ImageKnob: Knob {
+open class ImageKnob: Knob {
 
     public var images = [UIImage]()
     public var frameCount: Int { return images.count }

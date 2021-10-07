@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-public class StepperButtons: UIView {
+open class StepperButtons: UIView {
 
     public var delegate: StepperDelegate?
     @IBInspectable public var upOnImage: UIImage? = nil

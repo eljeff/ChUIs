@@ -10,7 +10,7 @@
 import UIKit
 
 @IBDesignable
-public class MultiStageButton: ButtonBase {
+open class MultiStageButton: ButtonBase {
 
     public var stageValue: Int = 0
     @IBInspectable public var numberOfStages: Int = 3

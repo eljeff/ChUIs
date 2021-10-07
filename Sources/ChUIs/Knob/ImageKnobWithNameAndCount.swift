@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-public class ImageKnobWithNameAndCount: ImageKnob {
+open class ImageKnobWithNameAndCount: ImageKnob {
     @IBInspectable var basename: String? = nil
     @IBInspectable var imageExtension: String = "png"
     @IBInspectable var numberOfImages: Int = 0

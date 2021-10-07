@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-public class ImageStripKnob: ImageKnob {
+open class ImageStripKnob: ImageKnob {
     @IBInspectable var basename: String? = nil
     @IBInspectable var imageExtension: String = "png"
     @IBInspectable var baseWidth: CGFloat = 0

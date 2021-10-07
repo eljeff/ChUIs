@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class KnobStyleKit : NSObject {
+open class KnobStyleKit : NSObject {
 
     //// Drawing Methods
     @objc dynamic public class func drawKnobCanvas(targetFrame: CGRect = CGRect(x: 0, y: 0, width: 150, height: 150),

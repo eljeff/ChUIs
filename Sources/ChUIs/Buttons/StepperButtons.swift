@@ -37,7 +37,7 @@ open class StepperButtons: UIView {
         initFunctions()
     }
 
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
         let elementWidth = frame.width / 3
         dnButton = MomentaryButton(frame: CGRect(x: 0, y: 0, width: elementWidth, height: frame.height))

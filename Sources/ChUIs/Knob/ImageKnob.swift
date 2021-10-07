@@ -48,7 +48,7 @@ open class ImageKnob: Knob {
         setupImageView()
     }
 
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
         setupImageView()
     }

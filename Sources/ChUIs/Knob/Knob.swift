@@ -26,7 +26,7 @@ open class StyleKitKnob: Knob {
 }
 
 @IBDesignable
-public class Knob: UIView {
+open class Knob: UIView {
 
     public var callback: (Float) -> Void = { _ in }
 

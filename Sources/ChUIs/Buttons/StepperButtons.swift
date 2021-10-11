@@ -20,8 +20,8 @@ open class StepperButtons: UIView {
     @IBInspectable public var textBackgroundColor: UIColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
     @IBInspectable public var textColor: UIColor = .white
     @IBInspectable public var fontScale: CGFloat = 0.6
-    private var dnButton: MomentaryButton!
-    private var upButton: MomentaryButton!
+    public var dnButton: MomentaryButton!
+    public var upButton: MomentaryButton!
     private var textLabel: ScaledLabel!
     private var currentValue: Int = 0
     private var minValue: Int = -3

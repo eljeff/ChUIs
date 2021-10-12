@@ -62,9 +62,9 @@ open class ButtonBase: UIView {
                            attribute: NSLayoutConstraint.Attribute.height,
                            multiplier: 1, constant: 0).isActive = true
          */
-               self.imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,constant: 20).isActive = true
-               self.imageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-               self.imageView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
-               self.imageView.widthAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
+               self.imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 20).isActive = true
+        self.imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+               self.imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+               self.imageView.widthAnchor.constraint(equalTo: self.heightAnchor).isActive = true
     }
 }

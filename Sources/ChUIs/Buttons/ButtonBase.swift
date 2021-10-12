@@ -1,6 +1,6 @@
 //
 //  ButtonBase.swift
-//  
+//
 //
 //  Created by Jeff Cooper on 10/7/21.
 //
@@ -9,8 +9,8 @@ import UIKit
 
 open class ButtonBase: UIView {
 
-    @IBInspectable public var imageContentMode: UIView.ContentMode = .center
-    public var imageView: UIImageView!
+    @IBInspectable public var imageContentMode: UIView.ContentMode = .scaleAspectFit
+    private var imageView: UIImageView!
 
     // Init / Lifecycle
     override init(frame: CGRect) {
@@ -44,7 +44,6 @@ open class ButtonBase: UIView {
         addSubview(imageView)
         self.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        /*
         NSLayoutConstraint(item: imageView!, attribute: NSLayoutConstraint.Attribute.centerX,
                            relatedBy: NSLayoutConstraint.Relation.equal, toItem: self,
                            attribute: NSLayoutConstraint.Attribute.centerX,
@@ -61,10 +60,5 @@ open class ButtonBase: UIView {
                            relatedBy: NSLayoutConstraint.Relation.equal, toItem: self,
                            attribute: NSLayoutConstraint.Attribute.height,
                            multiplier: 1, constant: 0).isActive = true
-         */
-               self.imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-                self.imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-               self.imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-               self.imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
     }
 }

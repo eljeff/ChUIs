@@ -10,7 +10,7 @@ import UIKit
 open class ButtonBase: UIView {
 
     @IBInspectable public var imageContentMode: UIView.ContentMode = .center
-    private var imageView: UIImageView!
+    public var imageView: UIImageView!
 
     // Init / Lifecycle
     override init(frame: CGRect) {
@@ -65,6 +65,6 @@ open class ButtonBase: UIView {
                self.imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
                 self.imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
                self.imageView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
-               self.imageView.widthAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+               self.imageView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
     }
 }

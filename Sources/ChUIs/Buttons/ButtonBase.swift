@@ -9,7 +9,7 @@ import UIKit
 
 open class ButtonBase: UIView {
 
-    @IBInspectable public var imageContentMode: UIView.ContentMode = .scaleAspectFit
+    @IBInspectable public var imageContentMode: UIView.ContentMode = .center
     private var imageView: UIImageView!
 
     // Init / Lifecycle

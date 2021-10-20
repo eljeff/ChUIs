@@ -32,6 +32,7 @@ open class ButtonBase: UIView {
 
     public func updateImage(image: UIImage?) {
         imageView.image = image
+        imageView.frame = bounds
         setNeedsDisplay()
     }
 

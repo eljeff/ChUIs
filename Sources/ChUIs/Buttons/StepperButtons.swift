@@ -27,12 +27,16 @@ open class StepperButtons: UIView {
     private var minValue: Int = -3
     private var maxValue: Int = 3
 
-    var buttonWidth: CGFloat {
-        return ceil((frame.width - layer.borderWidth) / 3)
+    private var usableWidth: CGFloat {
+        return round(frame.width - layer.borderWidth)
+    }
+    
+    private var buttonWidth: CGFloat {
+        return ceil((usableWidth - layer.borderWidth) / 3)
     }
 
-    var labelWidth: CGFloat {
-        return frame.width - (buttonWidth * 2)
+    private var labelWidth: CGFloat {
+        return usableWidth - (buttonWidth * 2)
     }
     
     private func initButtons() {

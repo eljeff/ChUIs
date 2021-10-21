@@ -26,23 +26,29 @@ open class StepperButtons: UIView {
     private var currentValue: Int = 0
     private var minValue: Int = -3
     private var maxValue: Int = 3
+    var elementWidth: CGFloat {
+        return ceil((frame.width - layer.borderWidth) / 3)
+    }
+    
+    private func initButtons() {
+        dnButton = MomentaryButton(frame: CGRect(x: 0, y: 0,
+                                                 width: elementWidth, height: frame.height))
+        textLabel = ScaledLabel(frame: CGRect(x: elementWidth, y: 0,
+                                              width: elementWidth, height: frame.height))
+        upButton = MomentaryButton(frame: CGRect(x: elementWidth * 2, y: 0,
+                                                 width: elementWidth, height: frame.height))
+    }
 
     override public init(frame: CGRect) {
-        let elementWidth = frame.width / 3
-        dnButton = MomentaryButton(frame: CGRect(x: 0, y: 0, width: elementWidth, height: frame.height))
-        textLabel = ScaledLabel(frame: CGRect(x: elementWidth, y: 0, width: elementWidth, height: frame.height))
-        upButton = MomentaryButton(frame: CGRect(x: elementWidth * 2, y: 0, width: elementWidth, height: frame.height))
         super.init(frame: frame)
+        initButtons()
         addAllViews()
         initFunctions()
     }
 
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-        let elementWidth = frame.width / 3
-        dnButton = MomentaryButton(frame: CGRect(x: 0, y: 0, width: elementWidth, height: frame.height))
-        textLabel = ScaledLabel(frame: CGRect(x: elementWidth, y: 0, width: elementWidth, height: frame.height))
-        upButton = MomentaryButton(frame: CGRect(x: elementWidth * 2, y: 0, width: elementWidth, height: frame.height))
+        initButtons()
         addAllViews()
         initFunctions()
     }
@@ -59,10 +65,12 @@ open class StepperButtons: UIView {
     }
 
     private func resizeSubViews() {
-        let elementWidth = frame.width / 3
-        dnButton.frame = CGRect(x: 0, y: 0, width: elementWidth, height: frame.height)
-        textLabel.frame = CGRect(x: elementWidth, y: 0, width: elementWidth, height: frame.height)
-        upButton.frame = CGRect(x: elementWidth * 2, y: 0, width: elementWidth, height: frame.height)
+        dnButton.frame = CGRect(x: 0, y: 0,
+                                width: elementWidth, height: frame.height)
+        textLabel.frame = CGRect(x: elementWidth, y: 0,
+                                 width: elementWidth, height: frame.height)
+        upButton.frame = CGRect(x: elementWidth * 2, y: 0,
+                                width: elementWidth, height: frame.height)
         setNeedsDisplay()
     }
 

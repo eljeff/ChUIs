@@ -90,12 +90,12 @@ open class StepperButtons: UIView {
         textLabel.textAlignment = .center
         dnButton.callback = { [weak self] isPressed in
             if isPressed {
-                self?.lowerOctave()
+                self?.stepDownValue()
             }
         }
         upButton.callback = { [weak self] isPressed in
             if isPressed {
-                self?.raiseOctave()
+                self?.stepUpValue()
             }
         }
     }
@@ -114,13 +114,13 @@ open class StepperButtons: UIView {
         textLabel.fontScale = fontScale
     }
 
-    private func lowerOctave() {
+    private func stepDownValue() {
         currentValue = max(minValue, currentValue - 1)
         delegate?.stepperValueChanged(stepper: self, currentValue: currentValue)
         refreshUI()
     }
 
-    private func raiseOctave() {
+    private func stepUpValue() {
         currentValue = min(maxValue, currentValue + 1)
         delegate?.stepperValueChanged(stepper: self, currentValue: currentValue)
         refreshUI()

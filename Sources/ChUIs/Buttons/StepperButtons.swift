@@ -62,7 +62,7 @@ open class StepperButtons: UIView {
         let elementWidth = frame.width / 3
         dnButton.frame = CGRect(x: 0, y: 0, width: elementWidth, height: frame.height)
         textLabel.frame = CGRect(x: elementWidth, y: 0, width: elementWidth, height: frame.height)
-        upButton.frame = CGRect(x: elementWidth * 2, y: 0, width: elementWidth, height: frame.height)
+        upButton.frame = CGRect(x: elementWidth * 2 - 1, y: 0, width: elementWidth, height: frame.height)
         setNeedsDisplay()
     }
 

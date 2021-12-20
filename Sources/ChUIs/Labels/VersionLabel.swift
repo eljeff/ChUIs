@@ -8,24 +8,24 @@
 import UIKit
 
 @IBDesignable
-public class VersionLabel: UIView {
-    @IBInspectable public var showBuild: Bool = false {
+open class VersionLabel: UIView {
+    @IBInspectable open var showBuild: Bool = false {
         didSet { updateText() }
     }
 
-    @IBInspectable public var fontSize: CGFloat = 22 {
+    @IBInspectable open var fontSize: CGFloat = 22 {
         didSet { updateFont() }
     }
 
-    @IBInspectable public var fontColour: UIColor = .black {
+    @IBInspectable open var fontColour: UIColor = .black {
         didSet { updateFont() }
     }
 
-    @IBInspectable public var fontName: String = "Courier" {
+    @IBInspectable open var fontName: String = "Courier" {
         didSet { updateFont() }
     }
 
-    @IBInspectable public var showVersionText: Bool = false {
+    @IBInspectable open var showVersionText: Bool = false {
         didSet { updateText() }
     }
 

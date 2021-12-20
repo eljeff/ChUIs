@@ -8,24 +8,24 @@
 import UIKit
 
 @IBDesignable
-class VersionLabel: UIView {
-    @IBInspectable var showBuild: Bool = false {
+public class VersionLabel: UIView {
+    @IBInspectable public var showBuild: Bool = false {
         didSet { updateText() }
     }
 
-    @IBInspectable var fontSize: CGFloat = 22 {
+    @IBInspectable public var fontSize: CGFloat = 22 {
         didSet { updateFont() }
     }
 
-    @IBInspectable var fontColour: UIColor = .black {
+    @IBInspectable public var fontColour: UIColor = .black {
         didSet { updateFont() }
     }
 
-    @IBInspectable var fontName: String = "Courier" {
+    @IBInspectable public var fontName: String = "Courier" {
         didSet { updateFont() }
     }
 
-    @IBInspectable var showVersionText: Bool = false {
+    @IBInspectable public var showVersionText: Bool = false {
         didSet { updateText() }
     }
 
@@ -53,17 +53,17 @@ class VersionLabel: UIView {
         return textLabel
     }()
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupView()
     }
 
-    override func prepareForInterfaceBuilder() {
+    override public func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         setupView()
     }
@@ -87,7 +87,7 @@ class VersionLabel: UIView {
     //custom views should override this to return true if
     //they cannot layout correctly using autoresizing.
     //from apple docs https://developer.apple.com/documentation/uikit/uiview/1622549-requiresconstraintbasedlayout
-    override class var requiresConstraintBasedLayout: Bool {
+    override public class var requiresConstraintBasedLayout: Bool {
         return true
     }
 }

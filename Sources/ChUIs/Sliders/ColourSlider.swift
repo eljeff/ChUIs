@@ -8,14 +8,12 @@
 import Foundation
 import UIKit
 
+@IBDesignable
 open class ColourSlider: UIControl {
-    @IBInspectable var sliderColour: UIColor = Colour.allCases.randomElement()?.colour ?? .red
-    @IBInspectable var minimumValue: CGFloat = 0
-    @IBInspectable var maximumValue: CGFloat = 1
-    @IBInspectable var value: CGFloat = 0.333
-    
-    var trackTintColor = UIColor(white: 0.9, alpha: 1)
-    var trackHighlightTintColor = UIColor(red: 0, green: 0.45, blue: 0.94, alpha: 1)
+    @IBInspectable var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
+    @IBInspectable var maximumValue: CGFloat = 1 { didSet { updateLayerFrames() } }
+    @IBInspectable var value: CGFloat = 0.333 { didSet { updateLayerFrames() } }
+    @IBInspectable var sliderBackgroundColour: UIColor = .systemBackground { didSet { updateLayerFrames() } }
     
     private let trackLayer = ColourSliderTrackLayer()
 
@@ -32,6 +30,12 @@ open class ColourSlider: UIControl {
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupViews()
+    }
+    
+    open override func prepareForInterfaceBuilder() {
+        super.prepareForInterfaceBuilder()
+        setupViews()
+        trackLayer.setNeedsDisplay()
     }
     
     open override var frame: CGRect {
@@ -56,12 +60,15 @@ open class ColourSlider: UIControl {
     }
     
     private func updateLayerFrames() {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+
         trackLayer.frame = bounds//.insetBy(dx: bounds.width / 3, dy: 0)
         trackLayer.setNeedsDisplay()
 //        if let thumbImage = thumbImage {
 //            thumbImageView.frame = CGRect(origin: thumbOriginForValue(value), size: thumbImage.size)
 //        }
-        print("slider value is \(value)")
+        CATransaction.commit()
     }
     
     private func thumbOriginForValue(_ value: CGFloat) -> CGPoint {
@@ -105,10 +112,6 @@ extension ColourSlider {
                                upperValue: maximumValue)
 //        }
         
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        updateLayerFrames()
-        CATransaction.commit()
         sendActions(for: .valueChanged)
         return true
     }
@@ -133,10 +136,10 @@ open class ColourSliderTrackLayer: CALayer {
         let path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
         ctx.addPath(path.cgPath)
         
-        ctx.setFillColor(slider.trackTintColor.cgColor)
+        ctx.setFillColor(slider.sliderBackgroundColour.cgColor)
         ctx.fillPath()
         
-        ctx.setFillColor(slider.trackHighlightTintColor.cgColor)
+        ctx.setFillColor(slider.tintColor.cgColor)
         let position = slider.fullRangePositionForValue(slider.value)
         let rect = CGRect(x: 0, y: position,
                           width: bounds.width,

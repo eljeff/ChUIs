@@ -9,9 +9,7 @@ import Foundation
 import UIKit
 
 @IBDesignable
-open class ColourSlider: UIControl, ViewWithBorder {
-    @IBInspectable public var borderWidth: CGFloat = 3
-    @IBInspectable public var borderColor: UIColor = .systemGray2
+open class ColourSlider: UIControl {
     
     @IBInspectable var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
     @IBInspectable var maximumValue: CGFloat = 1 { didSet { updateLayerFrames() } }
@@ -71,7 +69,6 @@ open class ColourSlider: UIControl, ViewWithBorder {
 //        if let thumbImage = thumbImage {
 //            thumbImageView.frame = CGRect(origin: thumbOriginForValue(value), size: thumbImage.size)
 //        }
-        updateBorders()
         CATransaction.commit()
     }
     
@@ -135,6 +132,7 @@ open class ColourSliderTrackLayer: CALayer {
   weak var slider: ColourSlider?
     
     open override func draw(in ctx: CGContext) {
+        super.draw(in: ctx)
         guard let slider = slider else { return }
         
         let path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)

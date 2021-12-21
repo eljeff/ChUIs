@@ -14,10 +14,13 @@ open class ColourSlider: UIControl {
     @IBInspectable var maximumValue: CGFloat = 1
     @IBInspectable var value: CGFloat = 0.333
     
-    var thumbImage = UIImage(systemName: "mount.fill")!
+    var trackTintColor = UIColor(white: 0.9, alpha: 1)
+    var trackHighlightTintColor = UIColor(red: 0, green: 0.45, blue: 0.94, alpha: 1)
+    
+    private let trackLayer = ColourSliderTrackLayer()
 
-    private let trackLayer = CALayer()
-    private let thumbImageView = UIImageView()
+//    var thumbImage = UIImage(systemName: "mount.fill")
+    //    private let thumbImageView = UIImageView()
     
     private var previousLocation = CGPoint()
 
@@ -42,28 +45,37 @@ open class ColourSlider: UIControl {
     }
     
     private func setupViews() {
-        trackLayer.backgroundColor = UIColor.blue.cgColor
+        trackLayer.slider = self
+        trackLayer.contentsScale = UIScreen.main.scale
         layer.addSublayer(trackLayer)
         
-        thumbImageView.image = thumbImage
-        addSubview(thumbImageView)
+//        thumbImageView.image = thumbImage
+//        addSubview(thumbImageView)
         
         updateLayerFrames()
     }
     
     private func updateLayerFrames() {
-        trackLayer.frame = bounds.insetBy(dx: bounds.width / 3, dy: 0)
+        trackLayer.frame = bounds//.insetBy(dx: bounds.width / 3, dy: 0)
         trackLayer.setNeedsDisplay()
-        thumbImageView.frame = CGRect(origin: thumbOriginForValue(value), size: thumbImage.size)
+//        if let thumbImage = thumbImage {
+//            thumbImageView.frame = CGRect(origin: thumbOriginForValue(value), size: thumbImage.size)
+//        }
+        print("slider value is \(value)")
+    }
+    
+    private func thumbOriginForValue(_ value: CGFloat) -> CGPoint {
+        let y = positionForValue(value)
+        return CGPoint(x: bounds.width / 2.0, y: y)
     }
     
     func positionForValue(_ value: CGFloat) -> CGFloat {
         return bounds.height * value
     }
     
-    private func thumbOriginForValue(_ value: CGFloat) -> CGPoint {
-        let y = positionForValue(value) - thumbImage.size.height / 2.0
-        return CGPoint(x: (bounds.width - thumbImage.size.width) / 2.0, y: y)
+    
+    func fullRangePositionForValue(_ value: CGFloat) -> CGFloat {
+        return bounds.height * value
     }
 }
 
@@ -73,11 +85,11 @@ extension ColourSlider {
         
         previousLocation = touch.location(in: self)
         
-        if thumbImageView.frame.contains(previousLocation) {
-            thumbImageView.isHighlighted = true
-        }
+//        if thumbImageView.frame.contains(previousLocation) {
+//            thumbImageView.isHighlighted = true
+//        }
         
-        return thumbImageView.isHighlighted
+        return true//thumbImageView.isHighlighted
     }
     
     open override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
@@ -87,16 +99,17 @@ extension ColourSlider {
         
         previousLocation = location
         
-        if thumbImageView.isHighlighted {
+//        if thumbImageView.isHighlighted {
             value += deltaValue
             value = boundValue(value, toLowerValue: minimumValue,
                                upperValue: maximumValue)
-        }
+//        }
         
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         updateLayerFrames()
         CATransaction.commit()
+        sendActions(for: .valueChanged)
         return true
     }
     
@@ -106,7 +119,29 @@ extension ColourSlider {
     }
     
     open override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-      thumbImageView.isHighlighted = false
+//      thumbImageView.isHighlighted = false
     }
 
+}
+
+open class ColourSliderTrackLayer: CALayer {
+  weak var slider: ColourSlider?
+    
+    open override func draw(in ctx: CGContext) {
+        guard let slider = slider else { return }
+        
+        let path = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
+        ctx.addPath(path.cgPath)
+        
+        ctx.setFillColor(slider.trackTintColor.cgColor)
+        ctx.fillPath()
+        
+        ctx.setFillColor(slider.trackHighlightTintColor.cgColor)
+        let position = slider.fullRangePositionForValue(slider.value)
+        let rect = CGRect(x: 0, y: position,
+                          width: bounds.width,
+                          height: bounds.height * max(position, 1.0))
+        print(rect)
+        ctx.fill(rect)
+    }
 }

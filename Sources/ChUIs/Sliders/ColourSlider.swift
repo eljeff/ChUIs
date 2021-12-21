@@ -9,7 +9,10 @@ import Foundation
 import UIKit
 
 @IBDesignable
-open class ColourSlider: UIControl {
+open class ColourSlider: UIControl, ViewWithBorder {
+    @IBInspectable public var borderWidth: CGFloat = 3
+    @IBInspectable public var borderColor: UIColor = .systemGray2
+    
     @IBInspectable var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
     @IBInspectable var maximumValue: CGFloat = 1 { didSet { updateLayerFrames() } }
     @IBInspectable var value: CGFloat = 0.333 { didSet { updateLayerFrames() } }
@@ -68,6 +71,7 @@ open class ColourSlider: UIControl {
 //        if let thumbImage = thumbImage {
 //            thumbImageView.frame = CGRect(origin: thumbOriginForValue(value), size: thumbImage.size)
 //        }
+        updateBorders()
         CATransaction.commit()
     }
     

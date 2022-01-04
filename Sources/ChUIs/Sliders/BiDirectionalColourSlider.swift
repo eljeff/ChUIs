@@ -1,22 +1,21 @@
 //
-//  ColourSlider.swift
+//  BiDirectionalColourSlider.swift
+//  
 //
+//  Created by Jeff Cooper on 1/4/22.
 //
-//  Created by Jeff Cooper on 12/21/21.
-//
-
 import Foundation
 import UIKit
 
 @IBDesignable
-open class ColourSlider: UIControl {
+open class BiDirectionalColourSlider: UIControl {
     
-    @IBInspectable var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
-    @IBInspectable var maximumValue: CGFloat = 1 { didSet { updateLayerFrames() } }
-    @IBInspectable var value: CGFloat = 0.333 { didSet { updateLayerFrames() } }
+    private var minimumValue: CGFloat = -1
+    private var maximumValue: CGFloat = 1
+    var value: CGFloat = 0 { didSet { updateLayerFrames() } }
     @IBInspectable var sliderBackgroundColour: UIColor = .systemBackground { didSet { updateLayerFrames() } }
     
-    private let trackLayer = ColourSliderTrackLayer()
+    private let trackLayer = BiDirectionalColourSliderTrackLayer()
 
 //    var thumbImage = UIImage(systemName: "mount.fill")
     //    private let thumbImageView = UIImageView()
@@ -87,7 +86,7 @@ open class ColourSlider: UIControl {
     }
 }
 
-extension ColourSlider {
+extension BiDirectionalColourSlider {
     
     open override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         
@@ -108,7 +107,7 @@ extension ColourSlider {
         previousLocation = location
         
 //        if thumbImageView.isHighlighted {
-            value += deltaValue
+            value -= deltaValue
             value = boundValue(value, toLowerValue: minimumValue,
                                upperValue: maximumValue)
 //        }
@@ -128,8 +127,8 @@ extension ColourSlider {
 
 }
 
-open class ColourSliderTrackLayer: CALayer {
-  weak var slider: ColourSlider?
+open class BiDirectionalColourSliderTrackLayer: CALayer {
+  weak var slider: BiDirectionalColourSlider?
     
     open override func draw(in ctx: CGContext) {
         super.draw(in: ctx)
@@ -142,10 +141,23 @@ open class ColourSliderTrackLayer: CALayer {
         ctx.fillPath()
         
         ctx.setFillColor(slider.tintColor.cgColor)
-        let position = slider.fullRangePositionForValue(slider.value)
+        var position = slider.fullRangePositionForValue(slider.value)
+        let minimumHeight = 3.0
+        var height = max((bounds.height * max(position, 1.0)), minimumHeight)
+        if slider.value > 0 {
+            height = (bounds.height / 2) * (position / bounds.height)
+            position = (bounds.height / 2) - height
+        } else if slider.value < 0 {
+            height = (bounds.height / 2) * ((position * -1) / bounds.height)
+            position = bounds.height / 2
+        } else {
+            height = minimumHeight
+            position = bounds.height / 2
+        }
+        height = max(height, minimumHeight)
         let rect = CGRect(x: 0, y: position,
                           width: bounds.width,
-                          height: bounds.height * max(position, 1.0))
+                          height: height)
         ctx.fill(rect)
     }
 }

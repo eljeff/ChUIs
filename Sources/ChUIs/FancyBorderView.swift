@@ -103,7 +103,7 @@ public extension FancyBorderView {
 
 open class BorderedView: UIView, FancyBorderView {
     public var borderWidth: CGFloat = 10
-    public var borderColor: UIColor = .blue
+    @IBInspectable public var borderColor: UIColor = .blue
     public var borderDrawOptions: BorderedViewDrawOptions = .DrawAll
     public var leftBorderColor: UIColor?
     public var topBorderColor: UIColor?

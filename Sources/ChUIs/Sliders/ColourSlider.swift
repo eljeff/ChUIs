@@ -249,7 +249,7 @@ extension BiDirectionalColourSlider {
         previousLocation = location
         
 //        if thumbImageView.isHighlighted {
-            value += deltaValue
+            value -= deltaValue
             value = boundValue(value, toLowerValue: minimumValue,
                                upperValue: maximumValue)
 //        }

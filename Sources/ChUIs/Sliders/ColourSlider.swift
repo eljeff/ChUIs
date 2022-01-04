@@ -284,7 +284,17 @@ open class BiDirectionalColourSliderTrackLayer: CALayer {
         
         ctx.setFillColor(slider.tintColor.cgColor)
         let position = slider.fullRangePositionForValue(slider.value)
-        let height = bounds.height * max(position, 1.0)
+        if slider.value > 0 {
+            let upperHeight = (bounds.height / 2) * (position / bounds.height)
+            print("upperHeight \(upperHeight)")
+        } else if slider.value < 0 {
+            let lowerHeight = (bounds.height / 2) * ((position * -1) / bounds.height)
+            print("lowerHeight \(lowerHeight)")
+        } else {
+            print("0 time")
+        }
+        let minimumHeight = 3.0
+        let height = max((bounds.height * max(position, 1.0)), minimumHeight)
         print("slider.value \(slider.value) position \(position) height \(height)")
         let rect = CGRect(x: 0, y: position,
                           width: bounds.width,

@@ -79,12 +79,12 @@ open class ColourSlider: UIControl {
     }
     
     func positionForValue(_ value: CGFloat) -> CGFloat {
-        return bounds.height * value
+        return bounds.height - (bounds.height * value)
     }
     
     
     func fullRangePositionForValue(_ value: CGFloat) -> CGFloat {
-        return bounds.height * value
+        return bounds.height - (bounds.height * value)
     }
 }
 
@@ -109,7 +109,7 @@ extension ColourSlider {
         previousLocation = location
         
 //        if thumbImageView.isHighlighted {
-        currentValue += Float(deltaValue)
+        currentValue -= Float(deltaValue)
         currentValue = Float(boundValue(CGFloat(currentValue), toLowerValue: minimumValue,
                                         upperValue: maximumValue))
 //        }

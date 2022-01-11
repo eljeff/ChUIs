@@ -11,9 +11,10 @@ import UIKit
 @IBDesignable
 open class ColourSlider: UIControl {
     
-    @IBInspectable var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
-    @IBInspectable var maximumValue: CGFloat = 1 { didSet { updateLayerFrames() } }
-    @IBInspectable var value: CGFloat = 0.333 { didSet { updateLayerFrames() } }
+    @IBInspectable public var defaultValue: Float = 0
+    @IBInspectable public var currentValue: Float = 0.333 { didSet { updateLayerFrames() } }
+    private var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
+    private var maximumValue: CGFloat = 1 { didSet { updateLayerFrames() } }
     @IBInspectable var sliderBackgroundColour: UIColor = .systemBackground { didSet { updateLayerFrames() } }
     
     private let trackLayer = ColourSliderTrackLayer()
@@ -108,9 +109,9 @@ extension ColourSlider {
         previousLocation = location
         
 //        if thumbImageView.isHighlighted {
-            value += deltaValue
-            value = boundValue(value, toLowerValue: minimumValue,
-                               upperValue: maximumValue)
+        currentValue += Float(deltaValue)
+        currentValue = Float(boundValue(CGFloat(currentValue), toLowerValue: minimumValue,
+                                        upperValue: maximumValue))
 //        }
         
         sendActions(for: .valueChanged)
@@ -142,7 +143,7 @@ open class ColourSliderTrackLayer: CALayer {
         ctx.fillPath()
         
         ctx.setFillColor(slider.tintColor.cgColor)
-        let position = slider.fullRangePositionForValue(slider.value)
+        let position = slider.fullRangePositionForValue(CGFloat(slider.currentValue))
         let rect = CGRect(x: 0, y: position,
                           width: bounds.width,
                           height: bounds.height * max(position, 1.0))

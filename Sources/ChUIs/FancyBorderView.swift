@@ -100,22 +100,3 @@ public extension FancyBorderView {
         context.setLineWidth(borderWidth)
     }
 }
-
-open class BorderedView: UIView, FancyBorderView {
-    public var borderWidth: CGFloat = 10
-    @IBInspectable public var borderColor: UIColor = .blue
-    public var borderDrawOptions: BorderedViewDrawOptions = .DrawAll
-    public var leftBorderColor: UIColor?
-    public var topBorderColor: UIColor?
-    public var rightBorderColor: UIColor?
-    public var bottomBorderColor: UIColor?
-    public var leftBorderWidth: CGFloat = 3
-    public var topBorderWidth: CGFloat = 3
-    public var rightBorderWidth: CGFloat = 3
-    public var bottomBorderWidth: CGFloat = 3
-    
-    open override func draw(_ rect: CGRect) {
-        super.draw(rect)
-        updateBorders(rect)
-    }
-}

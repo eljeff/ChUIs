@@ -23,10 +23,16 @@ open class ImageKnobWithNameAndCount: ImageKnob {
         super.init(coder: coder)
         generateImageBank()
     }
-
-    public override func updateKnobPosition(normalised: Float) {
+    
+    public override func updateUI(denormalised: Float) {
+        let clampedValue = (minimumValue...maximumValue).clamp(CGFloat(denormalised))
         generateImageBank()
-        super.updateKnobPosition(normalised: normalised)
+        super.updateUI(denormalised: Float(clampedValue))
+    }
+    
+    public override func updateUI(normalised: Float) {
+        let denormalised = CGFloat(normalised) * (maximumValue - minimumValue) + minimumValue
+        updateUI(denormalised: Float(denormalised))
     }
 
     public override func layoutSubviews() {

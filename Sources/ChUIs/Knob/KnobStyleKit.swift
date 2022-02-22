@@ -7,6 +7,25 @@
 
 import UIKit
 
+// FIXME: This single knob uses ~20% CPU when being turned - that is probably pretty bad?
+// the only part that needs to animate in this particular knob is the indicator, and that can
+// likely be accomplished w/ a basic rotation translation.
+@IBDesignable
+open class StyleKitKnob: Knob {
+    @IBInspectable public var outerRingIndicatorImage: UIImage? = nil
+    @IBInspectable public var indicatorColor: UIColor = #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1)
+    @IBInspectable public var indicatorBlurColor: UIColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+
+    public override func draw(_ rect: CGRect) {
+        KnobStyleKit.drawKnobCanvas(targetFrame: CGRect(x: 0, y: 0,
+                                                  width: self.bounds.width, height: self.bounds.height),
+                                    knobValue: CGFloat(normalisedValue),
+                                    indicatorColor: indicatorColor, indicatorBlurColor: indicatorBlurColor,
+                                    outerRingImage: outerRingIndicatorImage)
+    }
+
+}
+
 open class KnobStyleKit : NSObject {
 
     //// Drawing Methods

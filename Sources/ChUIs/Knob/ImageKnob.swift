@@ -30,7 +30,19 @@ open class ImageKnob: Knob {
 
     private var imageView = UIImageView()
 
-    public override func updateKnobPosition(normalised: Float) {
+    public override func updateUI(denormalised: Float) {
+        let clampedValue = (minimumValue...maximumValue).clamp(CGFloat(denormalised))
+        let normalised = (clampedValue - minimumValue) / (maximumValue - minimumValue)
+        updateImage(normalised: Float(normalised))
+        super.updateUI(denormalised: Float(clampedValue))
+    }
+    
+    public override func updateUI(normalised: Float) {
+        let denormalised = CGFloat(normalised) * (maximumValue - minimumValue) + minimumValue
+        updateUI(denormalised: Float(denormalised))
+    }
+    
+    private func updateImage(normalised: Float) {
         let frameNumber = max(min(Int(normalised * Float(frameCount).rounded()), frameCount - 1), 0)
         guard frameNumber < frameCount else {
             if frameCount != 0 {
@@ -39,7 +51,6 @@ open class ImageKnob: Knob {
             return
         }
         imageView.image = images[frameNumber]
-        super.updateKnobPosition(normalised: normalised)
     }
 
     override init(frame: CGRect) {

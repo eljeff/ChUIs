@@ -6,88 +6,69 @@
 //
 import UIKit
 
-// FIXME: This single knob uses ~20% CPU when being turned - that is probably pretty bad?
-// the only part that needs to animate in this particular knob is the indicator, and that can
-// likely be accomplished w/ a basic rotation translation.
 @IBDesignable
-open class StyleKitKnob: Knob {
-    @IBInspectable public var outerRingIndicatorImage: UIImage? = nil
-    @IBInspectable public var indicatorColor: UIColor = #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1)
-    @IBInspectable public var indicatorBlurColor: UIColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
-
-    public override func draw(_ rect: CGRect) {
-        KnobStyleKit.drawKnobCanvas(targetFrame: CGRect(x: 0, y: 0,
-                                                  width: self.bounds.width, height: self.bounds.height),
-                                    knobValue: CGFloat(normalisedValue),
-                                    indicatorColor: indicatorColor, indicatorBlurColor: indicatorBlurColor,
-                                    outerRingImage: outerRingIndicatorImage)
-    }
-
-}
-
-@IBDesignable
-open class Knob: UIView {
+open class Knob: UIControl {
 
     public var callback: (Float) -> Void = { _ in }
 
     @IBInspectable public var shouldRound: Bool = false
     @IBInspectable public var knobSensitivity: Float = 0.005   // higher is faster
-    @IBInspectable public var upperLimit: Float = 1.0
-    @IBInspectable public var lowerLimit: Float = 0.0
+    @IBInspectable public var maximumValue: CGFloat = 1.0
+    @IBInspectable public var minimumValue: CGFloat = 0.0
 
     @IBInspectable public var defaultValue: Float = 0.0 // the value knob will return to when double-clicked
 
     private var range: ClosedRange<Float> { // Not normalised
-        guard lowerLimit < upperLimit else {
-            fatalError("UpperLimit (\(upperLimit)) must be greater than lowerLimit \(lowerLimit)")
+        guard minimumValue < maximumValue else {
+            fatalError("UpperLimit (\(maximumValue)) must be greater than lowerLimit \(minimumValue)")
         }
-        return lowerLimit...upperLimit
+        return Float(minimumValue)...Float(maximumValue)
     }
 
     public var value: Float {
-        return (knobValue * fullRange) + range.lowerBound
+        return Float(knobValue)
     }
 
     public var normalisedValue: Float {
-        return knobValue
+        return Float(knobValue - minimumValue) * fullRange
     }
 
-    private var knobValue: Float = 0.0 //normalised value - used internally
+    private var knobValue: CGFloat = 0.0
 
     private var fullRange: Float {
         return range.upperBound - range.lowerBound
     }
 
-    public func updateKnobPosition(normalised: Float) { // simply redraws the knob
-        knobValue = (0...1).clamp(normalised)
+    public func updateUI(normalised: Float) { // simply redraws the knob
+        let clampedValue = (0...1.0).clamp(normalised)
+        let denormalised = (clampedValue * fullRange) + Float(minimumValue)
+        updateUI(denormalised: denormalised)
+    }
+
+    public func updateUI(denormalised: Float) { // this uses the full range of the knob
+        let clampedValue = range.clamp(denormalised)
+        knobValue = CGFloat(clampedValue)
         self.setNeedsDisplay()
     }
 
-    public func updateUIValue(denormalised: Float) { // this uses the full range of the knob
-        let clampedValue = range.clamp(denormalised)
-        let offsetRemoved = clampedValue - range.lowerBound
-        let normalised = offsetRemoved / fullRange
-        updateKnobPosition(normalised: normalised)
-    }
-
-    public func setToValue(value: Float) { // updates the knobPosition and sends value to callback
-        updateUIValue(denormalised: value)
-        callback(range.clamp(value))
+    public func setToValue(denormalised: Float) { // updates the knobPosition and sends value to callback
+        updateUI(denormalised: denormalised)
+//        callback(range.clamp(value))
     }
 
     public func resetToDefault() { // sets to default and sends the value to callback
-        setToValue(value: defaultValue)
+        setToValue(denormalised: defaultValue)
     }
 
     public func refreshKnobPosition() { // updates knobPosition visually
-        updateKnobPosition(normalised: knobValue)
+        updateUI(denormalised: Float(knobValue))
     }
 
     // Init / Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentMode = .redraw
-        setToValue(value: defaultValue)
+        setToValue(denormalised: defaultValue)
     }
 
     required public init?(coder: NSCoder) {
@@ -99,14 +80,14 @@ open class Knob: UIView {
         let tap = UITapGestureRecognizer(target: self, action: #selector(doubleTapped))
         tap.numberOfTapsRequired = 2
         self.addGestureRecognizer(tap)
-        setToValue(value: defaultValue)
+        setToValue(denormalised: defaultValue)
     }
 
     override public func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         contentMode = .scaleAspectFit
         clipsToBounds = true
-        setToValue(value: defaultValue)
+        setToValue(denormalised: defaultValue)
     }
 
     public class override var requiresConstraintBasedLayout: Bool {
@@ -117,36 +98,53 @@ open class Knob: UIView {
         resetToDefault()
     }
 
-    private var lastX: CGFloat = 0
-    private var lastY: CGFloat = 0
+    private var previousLocation: CGPoint = CGPoint()
 
     // Helper
-    private func setPercentagesWithTouchPoint(_ touchPoint: CGPoint) {
+    private func getUIValueFromTouchPoint(_ touchPoint: CGPoint, previousLocation: CGPoint, previousValue: CGFloat,
+                                          range: ClosedRange<CGFloat> = 0...1.0, sensitivity: CGFloat = 0.005) -> CGFloat {
         // Knobs assume up or right is increasing, and down or left is decreasing
-
-        var updatedKnobValue = knobValue + Float(touchPoint.x - lastX) * knobSensitivity
-        updatedKnobValue = updatedKnobValue - Float(touchPoint.y - lastY) * knobSensitivity
-        knobValue = Float((0...1).clamp(updatedKnobValue))
-
-        setToValue(value: value)
-        lastX = touchPoint.x
-        lastY = touchPoint.y
+        var updatedKnobValue = previousValue + (touchPoint.x - previousLocation.x) * sensitivity
+        updatedKnobValue = updatedKnobValue - (touchPoint.y - previousLocation.y) * sensitivity
+        return range.clamp(updatedKnobValue)
     }
 
-    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            let touchPoint = touch.location(in: self)
-            lastX = touchPoint.x
-            lastY = touchPoint.y
-        }
+//    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        for touch in touches {
+//            let touchPoint = touch.location(in: self)
+//            previousLocation = touchPoint
+//        }
+//    }
+//
+//    override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        for touch in touches {
+//            let touchPoint = touch.location(in: self)
+//            setPercentagesWithTouchPoint(touchPoint)
+//        }
+//    }
+}
+
+extension Knob {
+    
+    open override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        super.beginTracking(touch, with: event)
+        previousLocation = touch.location(in: self)
+        return true
+    }
+    
+    open override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        super.continueTracking(touch, with: event)
+        let location = touch.location(in: self)
+        knobValue = getUIValueFromTouchPoint(location, previousLocation: previousLocation, previousValue: knobValue, range: minimumValue...maximumValue,
+                                             sensitivity: CGFloat(knobSensitivity))
+        
+        previousLocation = location
+        updateUI(denormalised: Float(knobValue))
+        
+        sendActions(for: .valueChanged)
+        return true
     }
 
-    override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch in touches {
-            let touchPoint = touch.location(in: self)
-            setPercentagesWithTouchPoint(touchPoint)
-        }
-    }
 }
 
 extension ClosedRange {

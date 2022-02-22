@@ -11,6 +11,7 @@ import UIKit
 open class MomentaryButton: ButtonBase {
 
     public var callback: (Bool) -> Void = { _ in }
+    public var secondaryCallback: (Bool) -> Void = { _ in }
 
     @IBInspectable public var onImage: UIImage? = nil
     @IBInspectable public var offImage: UIImage? = nil
@@ -38,13 +39,17 @@ open class MomentaryButton: ButtonBase {
 
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         _isPressed = true
-        callback(_isPressed)
-        refreshUIState()
+        updateUIAndRunCallbacks()
     }
 
     override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         _isPressed = false
+        updateUIAndRunCallbacks()
+    }
+    
+    private func updateUIAndRunCallbacks() {
         callback(_isPressed)
+        secondaryCallback(_isPressed)
         refreshUIState()
     }
 }

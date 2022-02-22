@@ -14,6 +14,7 @@ open class ToggleButton: MomentaryButton {
         let isPressed = !isPressed
         updateUIState(isPressed: isPressed)
         callback(isPressed)
+        secondaryCallback(isPressed)
     }
 
     override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

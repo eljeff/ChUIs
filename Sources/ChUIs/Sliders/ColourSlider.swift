@@ -15,6 +15,8 @@ open class ColourSlider: UIControl {
     @IBInspectable public var currentValue: Float = 0.333 { didSet { updateLayerFrames() } }
     private var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
     private var maximumValue: CGFloat = 1 { didSet { updateLayerFrames() } }
+    public var minValue: Float { return Float(minimumValue) }
+    public var maxValue: Float { return Float(maximumValue) }
     @IBInspectable var sliderBackgroundColour: UIColor = .systemBackground { didSet { updateLayerFrames() } }
     
     private let trackLayer = ColourSliderTrackLayer()

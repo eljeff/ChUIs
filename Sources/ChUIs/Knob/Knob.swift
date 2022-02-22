@@ -9,8 +9,6 @@ import UIKit
 @IBDesignable
 open class Knob: UIControl {
 
-    public var callback: (Float) -> Void = { _ in }
-
     @IBInspectable public var shouldRound: Bool = false
     @IBInspectable public var knobSensitivity: Float = 0.005   // higher is faster
     @IBInspectable public var maximumValue: CGFloat = 1.0
@@ -51,12 +49,12 @@ open class Knob: UIControl {
         self.setNeedsDisplay()
     }
 
-    public func setToValue(denormalised: Float) { // updates the knobPosition and sends value to callback
+    public func setToValue(denormalised: Float) { // updates the knobPosition and sends value to actions
         updateUI(denormalised: denormalised)
-//        callback(range.clamp(value))
+        sendActions(for: .valueChanged)
     }
 
-    public func resetToDefault() { // sets to default and sends the value to callback
+    public func resetToDefault() { // sets to default and sends the value to actions
         setToValue(denormalised: defaultValue)
     }
 
@@ -108,20 +106,6 @@ open class Knob: UIControl {
         updatedKnobValue = updatedKnobValue - (touchPoint.y - previousLocation.y) * sensitivity
         return range.clamp(updatedKnobValue)
     }
-
-//    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        for touch in touches {
-//            let touchPoint = touch.location(in: self)
-//            previousLocation = touchPoint
-//        }
-//    }
-//
-//    override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        for touch in touches {
-//            let touchPoint = touch.location(in: self)
-//            setPercentagesWithTouchPoint(touchPoint)
-//        }
-//    }
 }
 
 extension Knob {

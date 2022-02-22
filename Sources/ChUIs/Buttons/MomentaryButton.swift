@@ -17,21 +17,18 @@ open class MomentaryButton: ButtonBase {
     @IBInspectable public var onColor: UIColor = #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1)
     @IBInspectable public var offColor: UIColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
 
-    public var isPressed: Bool = false {  //update state and send callback
-        didSet {
-            callback(isPressed)
-            refreshUIState()
-        }
-    }
+    private var _isPressed: Bool = false
+    public var isPressed: Bool { return _isPressed }
 
     public func updateUIState(isPressed: Bool) { // update ui state only - do not send callback
+        self._isPressed = isPressed
         backgroundColor = isPressed ? onColor : offColor
         updateImage(image: isPressed ? onImage : offImage)
         setNeedsDisplay()
     }
 
     public func refreshUIState() {
-        updateUIState(isPressed: isPressed)
+        updateUIState(isPressed: _isPressed)
     }
 
     override public func layoutSubviews() {
@@ -40,10 +37,14 @@ open class MomentaryButton: ButtonBase {
     }
 
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        isPressed = true
+        _isPressed = true
+        callback(_isPressed)
+        refreshUIState()
     }
 
     override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        isPressed = false
+        _isPressed = false
+        callback(_isPressed)
+        refreshUIState()
     }
 }

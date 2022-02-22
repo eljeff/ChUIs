@@ -136,7 +136,7 @@ extension Knob {
         super.continueTracking(touch, with: event)
         let location = touch.location(in: self)
         knobValue = getUIValueFromTouchPoint(location, previousLocation: previousLocation, previousValue: knobValue, range: minimumValue...maximumValue,
-                                             sensitivity: CGFloat(knobSensitivity))
+                                             sensitivity: CGFloat(knobSensitivity * fullRange))
         
         previousLocation = location
         updateUI(denormalised: Float(knobValue))

@@ -11,8 +11,8 @@ import UIKit
 open class BiDirectionalColourSlider: UIControl {
     
     @IBInspectable public var defaultValue: Float = 0
-    @IBInspectable public var currentValue: Float = 0.333 { didSet { updateLayerFrames() } }
-    private var minimumValue: CGFloat = -1
+    @IBInspectable public var currentValue: Float = 0.5 { didSet { updateLayerFrames() } }
+    private var minimumValue: CGFloat = 0
     private var maximumValue: CGFloat = 1
     public var minValue: Float { return Float(minimumValue) }
     public var maxValue: Float { return Float(maximumValue) }
@@ -145,13 +145,15 @@ open class BiDirectionalColourSliderTrackLayer: CALayer {
         
         ctx.setFillColor(slider.tintColor.cgColor)
         var position = slider.fullRangePositionForValue(CGFloat(slider.currentValue))
+        print("drawing slider for \(slider.currentValue)")
+        let value = max(min(Double(slider.currentValue), 1.0), 0)
         let minimumHeight = 3.0
         var height = max((bounds.height * max(position, 1.0)), minimumHeight)
-        if CGFloat(slider.currentValue) > 0 {
-            height = (bounds.height / 2) * (position / bounds.height)
+        if CGFloat(value) > 0.5 {
+            height = (bounds.height / 2) * ((value - 0.5) / 0.5)
             position = (bounds.height / 2) - height
-        } else if CGFloat(slider.currentValue) < 0 {
-            height = (bounds.height / 2) * ((position * -1) / bounds.height)
+        } else if CGFloat(value) < 0.5 {
+            height = (bounds.height / 2) * (1.0 - (value / 0.5))
             position = bounds.height / 2
         } else {
             height = minimumHeight

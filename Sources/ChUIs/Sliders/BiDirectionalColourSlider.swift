@@ -10,9 +10,12 @@ import UIKit
 @IBDesignable
 open class BiDirectionalColourSlider: UIControl {
     
+    @IBInspectable public var defaultValue: Float = 0
+    @IBInspectable public var currentValue: Float = 0.333 { didSet { updateLayerFrames() } }
     private var minimumValue: CGFloat = -1
     private var maximumValue: CGFloat = 1
-    var value: CGFloat = 0 { didSet { updateLayerFrames() } }
+    public var minValue: Float { return Float(minimumValue) }
+    public var maxValue: Float { return Float(maximumValue) }
     @IBInspectable var sliderBackgroundColour: UIColor = .systemBackground { didSet { updateLayerFrames() } }
     
     private let trackLayer = BiDirectionalColourSliderTrackLayer()
@@ -107,9 +110,9 @@ extension BiDirectionalColourSlider {
         previousLocation = location
         
 //        if thumbImageView.isHighlighted {
-            value -= deltaValue
-            value = boundValue(value, toLowerValue: minimumValue,
-                               upperValue: maximumValue)
+        currentValue -= Float(deltaValue)
+        currentValue = Float(boundValue(CGFloat(currentValue), toLowerValue: minimumValue,
+                               upperValue: maximumValue))
 //        }
         
         sendActions(for: .valueChanged)
@@ -141,13 +144,13 @@ open class BiDirectionalColourSliderTrackLayer: CALayer {
         ctx.fillPath()
         
         ctx.setFillColor(slider.tintColor.cgColor)
-        var position = slider.fullRangePositionForValue(slider.value)
+        var position = slider.fullRangePositionForValue(CGFloat(slider.currentValue))
         let minimumHeight = 3.0
         var height = max((bounds.height * max(position, 1.0)), minimumHeight)
-        if slider.value > 0 {
+        if CGFloat(slider.currentValue) > 0 {
             height = (bounds.height / 2) * (position / bounds.height)
             position = (bounds.height / 2) - height
-        } else if slider.value < 0 {
+        } else if CGFloat(slider.currentValue) < 0 {
             height = (bounds.height / 2) * ((position * -1) / bounds.height)
             position = bounds.height / 2
         } else {

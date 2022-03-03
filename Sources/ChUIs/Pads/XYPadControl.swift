@@ -64,6 +64,8 @@ extension XYPadControl {
         let location = touch.location(in: self)
         xValueNormalised = Float(boundValue(((maximumValue - minimumValue) * location.x / bounds.width), toLowerValue: 0, upperValue: 1))
         yValueNormalised = Float(1.0 - boundValue(((maximumValue - minimumValue) * location.y / bounds.height), toLowerValue: 0, upperValue: 1))
+        sendActions(for: .valueChanged)
+        print("x: \(xValueNormalised) - y: \(yValueNormalised)")
     }
     
     open override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
@@ -75,8 +77,6 @@ extension XYPadControl {
     open override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         super.continueTracking(touch, with: event)
         updateValuesFromTouch(touch)
-        sendActions(for: .valueChanged)
-        print("x: \(xValueNormalised) - y: \(yValueNormalised)")
         return true
     }
     

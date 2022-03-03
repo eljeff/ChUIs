@@ -9,7 +9,14 @@ import UIKit
 
 @IBDesignable
 open class XYPadControl: UIControl {
+    
+    public var xValueNormalised: Float = 0.5 { didSet { updateLayerFrames() } }
+    public var yValueNormalised: Float = 0.5 { didSet { updateLayerFrames() } }
+    private var minimumValue: CGFloat = 0
+    private var maximumValue: CGFloat = 1
     private var backgroundView: BorderedView!
+    
+    private var previousLocation = CGPoint()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,6 +43,7 @@ open class XYPadControl: UIControl {
         backgroundView.borderColor = .purple
         backgroundView.backgroundColor = .cyan
         backgroundView.frame = bounds
+        backgroundView.isUserInteractionEnabled = false
         addSubview(backgroundView)
         updateLayerFrames()
     }
@@ -47,4 +55,38 @@ open class XYPadControl: UIControl {
 //        trackLayer.setNeedsDisplay()
 //        CATransaction.commit()
     }
+}
+
+extension XYPadControl {
+    
+    private func updateValuesFromTouch(_ touch: UITouch) {
+        previousLocation = touch.location(in: self)
+        let location = touch.location(in: self)
+        xValueNormalised = Float(boundValue(((maximumValue - minimumValue) * location.x / bounds.width), toLowerValue: 0, upperValue: 1))
+        yValueNormalised = Float(1.0 - boundValue(((maximumValue - minimumValue) * location.y / bounds.height), toLowerValue: 0, upperValue: 1))
+    }
+    
+    open override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        super.beginTracking(touch, with: event)
+        updateValuesFromTouch(touch)
+        return true
+    }
+    
+    open override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        super.continueTracking(touch, with: event)
+        updateValuesFromTouch(touch)
+        sendActions(for: .valueChanged)
+        print("x: \(xValueNormalised) - y: \(yValueNormalised)")
+        return true
+    }
+    
+    private func boundValue(_ value: CGFloat, toLowerValue lowerValue: CGFloat,
+                            upperValue: CGFloat) -> CGFloat {
+        return min(max(value, lowerValue), upperValue)
+    }
+    
+    open override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+        super.endTracking(touch, with: event)
+    }
+
 }

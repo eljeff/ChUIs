@@ -24,6 +24,12 @@ open class BiDirectionalColourSlider: UIControl {
     //    private let thumbImageView = UIImageView()
     
     private var previousLocation = CGPoint()
+    private var doubleTapRecogniser: UITapGestureRecognizer {
+        let recogniser = UITapGestureRecognizer(target: self,
+                                                     action: #selector(doubleTapReceived(sender: )))
+        recogniser.numberOfTapsRequired = 2
+        return recogniser
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,6 +57,17 @@ open class BiDirectionalColourSlider: UIControl {
         updateLayerFrames()
     }
     
+    public func resetToDefault()
+    {
+        currentValue = defaultValue
+        sendActions(for: .valueChanged)
+    }
+    
+    @objc public func doubleTapReceived(sender: UIGestureRecognizer)
+    {
+        resetToDefault()
+    }
+    
     private func setupViews() {
         trackLayer.slider = self
         trackLayer.contentsScale = UIScreen.main.scale
@@ -60,6 +77,7 @@ open class BiDirectionalColourSlider: UIControl {
 //        addSubview(thumbImageView)
         
         updateLayerFrames()
+        addGestureRecognizer(doubleTapRecogniser)
     }
     
     private func updateLayerFrames() {

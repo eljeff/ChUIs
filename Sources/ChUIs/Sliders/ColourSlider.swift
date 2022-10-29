@@ -25,6 +25,12 @@ open class ColourSlider: UIControl {
     //    private let thumbImageView = UIImageView()
     
     private var previousLocation = CGPoint()
+    private var doubleTapRecogniser: UITapGestureRecognizer {
+        let recogniser = UITapGestureRecognizer(target: self,
+                                                     action: #selector(doubleTapReceived(sender: )))
+        recogniser.numberOfTapsRequired = 2
+        return recogniser
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,6 +58,17 @@ open class ColourSlider: UIControl {
         updateLayerFrames()
     }
     
+    public func resetToDefault()
+    {
+        currentValue = defaultValue
+        sendActions(for: .valueChanged)
+    }
+    
+    @objc public func doubleTapReceived(sender: UIGestureRecognizer)
+    {
+        resetToDefault()
+    }
+    
     private func setupViews() {
         trackLayer.slider = self
         trackLayer.contentsScale = UIScreen.main.scale
@@ -59,7 +76,7 @@ open class ColourSlider: UIControl {
         
 //        thumbImageView.image = thumbImage
 //        addSubview(thumbImageView)
-        
+        addGestureRecognizer(doubleTapRecogniser)
         updateLayerFrames()
     }
     

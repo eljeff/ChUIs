@@ -20,6 +20,7 @@ open class TextSlider: UIControl {
     public var maxValue: Float { return Float(maximumValue) }
     @IBInspectable var sliderBackgroundColour: UIColor = .systemBackground { didSet { updateLayerFrames() } }
     
+    private var valueLabel: UILabel
 //    private let trackLayer = ColourSliderTrackLayer()
     
     private var previousLocation = CGPoint()
@@ -31,11 +32,13 @@ open class TextSlider: UIControl {
     }
 
     override init(frame: CGRect) {
+        valueLabel = UILabel(frame: frame)
         super.init(frame: frame)
         setupViews()
     }
 
     required public init?(coder aDecoder: NSCoder) {
+        valueLabel = UILabel(coder: aDecoder) ?? UILabel()
         super.init(coder: aDecoder)
         setupViews()
     }
@@ -71,9 +74,21 @@ open class TextSlider: UIControl {
 //        trackLayer.slider = self
 //        trackLayer.contentsScale = UIScreen.main.scale
 //        layer.addSublayer(trackLayer)
-        
+        addSubview(valueLabel)
+        valueLabel.isUserInteractionEnabled = false
+        valueLabel.textColor = .white
+        valueLabel.textAlignment = .center
+        addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .centerX, relatedBy: .equal,
+                                         toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0))
+        addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .centerY, relatedBy: .equal,
+                                         toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0))
+        addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .width, relatedBy: .equal,
+                                         toItem: self, attribute: .width, multiplier: 1.0, constant: 0))
+        addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .height, relatedBy: .equal,
+                                         toItem: self, attribute: .height, multiplier: 1.0, constant: 0))
         addGestureRecognizer(doubleTapRecogniser)
         updateLayerFrames()
+        updateValueLabel()
     }
     
     private func updateLayerFrames() {
@@ -87,6 +102,10 @@ open class TextSlider: UIControl {
     
     func fullRangePositionForValue(_ value: CGFloat) -> CGFloat {
         return bounds.height - (bounds.height * value)
+    }
+    
+    func updateValueLabel() {
+        valueLabel.text = "\(String(format: "%.2f", currentValue)) secs"
     }
 }
 
@@ -109,7 +128,9 @@ extension TextSlider {
         currentValue -= Float(deltaValue)
         currentValue = Float(boundValue(CGFloat(currentValue), toLowerValue: minimumValue,
                                         upperValue: maximumValue))
+        updateValueLabel()
         sendActions(for: .valueChanged)
+        print(currentValue)
         return true
     }
     

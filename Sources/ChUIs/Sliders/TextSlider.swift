@@ -110,8 +110,6 @@ extension TextSlider {
         currentValue = Float(boundValue(CGFloat(currentValue), toLowerValue: minimumValue,
                                         upperValue: maximumValue))
         sendActions(for: .valueChanged)
-        print("value is \(currentValue)")
-        print("location \(location) deltaLocation \(deltaLocation) deltaVal \(deltaValue)")
         return true
     }
     

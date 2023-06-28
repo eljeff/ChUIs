@@ -11,6 +11,7 @@ import UIKit
 @IBDesignable
 open class TextSlider: UIControl {
     
+    @IBInspectable public var extraHeightPx: CGFloat = 0;
     @IBInspectable public var defaultValue: Float = 0
     @IBInspectable public var currentValue: Float = 0.333 { didSet { updateLayerFrames() } }
     private var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
@@ -84,16 +85,6 @@ open class TextSlider: UIControl {
         CATransaction.commit()
     }
     
-    private func thumbOriginForValue(_ value: CGFloat) -> CGPoint {
-        let y = positionForValue(value)
-        return CGPoint(x: bounds.width / 2.0, y: y)
-    }
-    
-    func positionForValue(_ value: CGFloat) -> CGFloat {
-        return bounds.height - (bounds.height * value)
-    }
-    
-    
     func fullRangePositionForValue(_ value: CGFloat) -> CGFloat {
         return bounds.height - (bounds.height * value)
     }
@@ -111,7 +102,7 @@ extension TextSlider {
     open override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         let location = touch.location(in: self)
         let deltaLocation = location.y - previousLocation.y
-        let deltaValue = (maximumValue - minimumValue) * deltaLocation / bounds.height
+        let deltaValue = (maximumValue - minimumValue) * deltaLocation / (bounds.height + extraHeightPx)
         
         previousLocation = location
         
@@ -120,6 +111,7 @@ extension TextSlider {
                                         upperValue: maximumValue))
         sendActions(for: .valueChanged)
         print("value is \(currentValue)")
+        print("location \(location) deltaLocation \(deltaLocation) deltaVal \(deltaValue)")
         return true
     }
     

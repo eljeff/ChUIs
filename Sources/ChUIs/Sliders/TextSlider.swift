@@ -19,9 +19,9 @@ open class TextSlider: UIControl {
     public var minValue: Float { return Float(minimumValue) }
     public var maxValue: Float { return Float(maximumValue) }
     @IBInspectable var sliderBackgroundColour: UIColor = .systemBackground { didSet { updateLayerFrames() } }
+    @IBInspectable var labelColour: UIColor = .gray { didSet { updateLayerFrames() } }
     
     private var valueLabel: UILabel
-//    private let trackLayer = ColourSliderTrackLayer()
     
     private var previousLocation = CGPoint()
     private var doubleTapRecogniser: UITapGestureRecognizer {
@@ -46,7 +46,6 @@ open class TextSlider: UIControl {
     open override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         setupViews()
-//        trackLayer.setNeedsDisplay()
     }
     
     open override var frame: CGRect {
@@ -71,13 +70,10 @@ open class TextSlider: UIControl {
     }
     
     private func setupViews() {
-//        trackLayer.slider = self
-//        trackLayer.contentsScale = UIScreen.main.scale
-//        layer.addSublayer(trackLayer)
         addSubview(valueLabel)
         valueLabel.isUserInteractionEnabled = false
-        valueLabel.textColor = .white
         valueLabel.textAlignment = .center
+        valueLabel.textColor = labelColour
         addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .centerX, relatedBy: .equal,
                                          toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0))
         addConstraint(NSLayoutConstraint(item: valueLabel, attribute: .centerY, relatedBy: .equal,
@@ -94,9 +90,6 @@ open class TextSlider: UIControl {
     private func updateLayerFrames() {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-
-//        trackLayer.frame = bounds//.insetBy(dx: bounds.width / 3, dy: 0)
-//        trackLayer.setNeedsDisplay()
         CATransaction.commit()
     }
     
@@ -130,7 +123,6 @@ extension TextSlider {
                                         upperValue: maximumValue))
         updateValueLabel()
         sendActions(for: .valueChanged)
-        print(currentValue)
         return true
     }
     

@@ -11,7 +11,9 @@ import UIKit
 @IBDesignable
 open class TextSlider: UIControl {
     
-    @IBInspectable public var extraHeightPx: CGFloat = 0;
+    @IBInspectable public var extraHeightPx: CGFloat = 0
+    @IBInspectable public var minValueDisplay: Float = 0
+    @IBInspectable public var maxValueDisplay: Float = 5
     @IBInspectable public var defaultValue: Float = 0
     @IBInspectable public var currentValue: Float = 0.333 { didSet { updateLayerFrames() } }
     private var minimumValue: CGFloat = 0 { didSet { updateLayerFrames() } }
@@ -91,6 +93,7 @@ open class TextSlider: UIControl {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         CATransaction.commit()
+        updateValueLabel()
     }
     
     func fullRangePositionForValue(_ value: CGFloat) -> CGFloat {
@@ -98,7 +101,8 @@ open class TextSlider: UIControl {
     }
     
     func updateValueLabel() {
-        valueLabel.text = "\(String(format: "%.2f", currentValue)) secs"
+        let denorm = currentValue * (maxValueDisplay - minValueDisplay) + minValueDisplay
+        valueLabel.text = "\(String(format: "%.2f", denorm)) secs"
     }
 }
 

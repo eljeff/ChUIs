@@ -163,7 +163,6 @@ open class BiDirectionalColourSliderTrackLayer: CALayer {
         
         ctx.setFillColor(slider.tintColor.cgColor)
         var position = slider.fullRangePositionForValue(CGFloat(slider.currentValue))
-        print("drawing slider for \(slider.currentValue)")
         let value = max(min(Double(slider.currentValue), 1.0), 0)
         let minimumHeight = 3.0
         var height = max((bounds.height * max(position, 1.0)), minimumHeight)

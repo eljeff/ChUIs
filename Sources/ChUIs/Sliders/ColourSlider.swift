@@ -128,9 +128,10 @@ extension ColourSlider {
         previousLocation = location
         
 //        if thumbImageView.isHighlighted {
-        currentValue -= Float(deltaValue)
-        currentValue = Float(boundValue(CGFloat(currentValue), toLowerValue: minimumValue,
-                                        upperValue: maximumValue))
+        var workingValue = currentValue - Float(deltaValue)
+        workingValue = Float(boundValue(CGFloat(workingValue), toLowerValue: minimumValue,
+                                    upperValue: maximumValue))
+        currentValue = workingValue
 //        }
         
         sendActions(for: .valueChanged)

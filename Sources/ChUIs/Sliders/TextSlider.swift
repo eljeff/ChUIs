@@ -122,9 +122,11 @@ extension TextSlider {
         
         previousLocation = location
         
-        currentValue -= Float(deltaValue)
-        currentValue = Float(boundValue(CGFloat(currentValue), toLowerValue: minimumValue,
-                                        upperValue: maximumValue))
+        var workingValue = currentValue - Float(deltaValue)
+        workingValue = Float(boundValue(CGFloat(workingValue), toLowerValue: minimumValue,
+                                    upperValue: maximumValue))
+        currentValue = workingValue
+        
         updateValueLabel()
         sendActions(for: .valueChanged)
         return true

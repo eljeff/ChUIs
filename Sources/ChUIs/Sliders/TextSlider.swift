@@ -104,6 +104,10 @@ open class TextSlider: UIControl {
         let denorm = currentValue * (maxValueDisplay - minValueDisplay) + minValueDisplay
         valueLabel.text = "\(String(format: "%.2f", denorm)) secs"
     }
+    
+    public func setFontSize(size: CGFloat) {
+        valueLabel.font = valueLabel.font.withSize(size)
+    }
 }
 
 extension TextSlider {
